@@ -19,7 +19,7 @@ gc = gspread.authorize(creds)
 def fetch_allowed_users():
     """Fetch allowed users from the 'allowed_users' tab in the connected Google Sheet."""
     spreadsheet = gc.open_by_key(SHEET_ID)
-    worksheet = spreadsheet.worksheet("allowed_users")  # Use the new tab name
+    worksheet = spreadsheet.worksheet("allowed_users_CE")  # Use the new tab name
     allowed_users = worksheet.col_values(1)  # Fetch usernames from Column A
     return set(allowed_users)
 
@@ -50,28 +50,6 @@ def save_annotations(user_id, annotations):
 # --- STREAMLIT APP SETUP ---
 st.sidebar.title("Brugerlogin")
 
-# ✅ Check if user is logged in
-# if "user_id" not in st.session_state:
-#     user_id = st.sidebar.text_input("Indtast dit bruger-ID:")
-#     if st.sidebar.button("Log in") and user_id.strip():
-#         st.session_state.user_id = user_id.strip()
-#         st.session_state.sentence_index = -1
-#         st.session_state.annotations = []
-#         st.session_state.annotated_sentences = get_annotated_sentences(user_id)
-#         st.session_state.worksheet_ready = False
-#         st.session_state.finished = False
-#         st.session_state.selected_label = None  # ✅ Track selected button label
-#         st.rerun()
-# else:
-#     user_id = st.session_state.user_id
-#     st.sidebar.success(f"Du er logget ind som: **{user_id}**")
-
-#     if st.sidebar.button("Log ud"):
-#         if st.session_state.annotations:
-#             threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
-#             st.session_state.annotations = []
-#         st.session_state.clear()
-#         st.rerun()
 # ✅ Load allowed users dynamically from Google Sheets
 ALLOWED_USERS = fetch_allowed_users()
 
