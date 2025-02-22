@@ -1,5 +1,5 @@
 # Core Packages
-#streamlit==1.42.2
+streamlit
 pandas==2.2.3
 gspread==6.1.4
 google-auth==2.38.0
@@ -9,9 +9,6 @@ google-api-core==2.24.1
 # Utility Libraries
 requests==2.32.3
 python-dateutil==2.9.0.post0
-
-# For concurrency and threading
-threading2==1.0.1
 
 # For JSON handling
 jsonschema==4.23.0
