@@ -10,7 +10,7 @@ google-api-core==2.24.1
 requests==2.32.3
 python-dateutil==2.9.0.post0
 
-# Optional: For concurrency and threading
+# For concurrency and threading
 threading2==1.0.1
 
 # For JSON handling
