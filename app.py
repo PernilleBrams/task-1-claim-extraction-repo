@@ -195,7 +195,7 @@ def annotate(label):
             threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
             st.session_state.annotations = []
 
-    st.rerun()  # Only one rerun at the end
+    #st.rerun()  # Only one rerun at the end
 
 def skip_sentence():
     """ Move to the next sentence without annotation. """
