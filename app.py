@@ -94,17 +94,6 @@ if not st.session_state.get("worksheet_ready", False):
     threading.Thread(target=get_user_worksheet, args=(user_id,), daemon=True).start()
     st.session_state.worksheet_ready = True
 
-# Initialize progress and ticket tracking
-if "total_sentences" not in st.session_state:
-    st.session_state.total_sentences = len(st.session_state.unannotated_sentences)
-
-if "annotated_count" not in st.session_state:
-    st.session_state.annotated_count = len(st.session_state.annotated_sentences)
-
-if "lottery_tickets" not in st.session_state:
-    st.session_state.lottery_tickets = st.session_state.annotated_count // 10
-
-
 # --- LOAD SENTENCES FROM LOCAL FILE ---
 BASE_DIR = os.getcwd()
 DATA_FILE = os.path.join(BASE_DIR, "data", "clean", "processed_sentences.txt")
@@ -123,6 +112,16 @@ unannotated_sentences = df_sentences[~df_sentences["sentence"].isin(st.session_s
 
 # ✅ Store unannotated sentences in session state
 st.session_state.unannotated_sentences = unannotated_sentences
+
+# Initialize progress and ticket tracking
+if "total_sentences" not in st.session_state:
+    st.session_state.total_sentences = len(st.session_state.unannotated_sentences)
+
+if "annotated_count" not in st.session_state:
+    st.session_state.annotated_count = len(st.session_state.annotated_sentences)
+
+if "lottery_tickets" not in st.session_state:
+    st.session_state.lottery_tickets = st.session_state.annotated_count // 30
 
 # ✅ Ensure `sentence_index` is initialized correctly
 if "sentence_index" not in st.session_state or st.session_state.sentence_index == -1:
