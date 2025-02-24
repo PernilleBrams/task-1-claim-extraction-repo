@@ -148,6 +148,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# ✅ Trigger manual rerun only if the flag is set
+if "force_refresh" in st.session_state and st.session_state.force_refresh:
+    st.session_state.force_refresh = False  # Reset the flag
+    st.experimental_rerun()  # This forces a rerun without triggering a double rerun
+
+
 # --- More Context Button ---
 st.button("Mere kontekst", key="context_btn")
 
@@ -187,17 +193,20 @@ def annotate(label):
     # ✅ Move to the next sentence or show completion message
     if st.session_state.sentence_index >= len(st.session_state.unannotated_sentences) - 1:
         st.session_state.finished = True
-        threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
+        threading.Thread(
+            target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
+        ).start()
         st.session_state.annotations = []
     else:
-        # ✅ Manually increment sentence index without relying on rerun
-        st.session_state.sentence_index += 1
+        st.session_state.sentence_index += 1  # Increment without rerun
         if len(st.session_state.annotations) >= 10:
-            threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
+            threading.Thread(
+                target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
+            ).start()
             st.session_state.annotations = []
 
-    # ✅ Trigger a controlled rerun only when necessary
-    st.rerun()  # Ensures an immediate refresh without causing double reruns
+    # ✅ Set a flag to trigger a refresh
+    st.session_state.force_refresh = True
 
 def skip_sentence():
     """ Move to the next sentence without annotation. """
