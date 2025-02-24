@@ -94,6 +94,17 @@ if not st.session_state.get("worksheet_ready", False):
     threading.Thread(target=get_user_worksheet, args=(user_id,), daemon=True).start()
     st.session_state.worksheet_ready = True
 
+# Initialize progress and ticket tracking
+if "total_sentences" not in st.session_state:
+    st.session_state.total_sentences = len(st.session_state.unannotated_sentences)
+
+if "annotated_count" not in st.session_state:
+    st.session_state.annotated_count = len(st.session_state.annotated_sentences)
+
+if "lottery_tickets" not in st.session_state:
+    st.session_state.lottery_tickets = st.session_state.annotated_count // 10
+
+
 # --- LOAD SENTENCES FROM LOCAL FILE ---
 BASE_DIR = os.getcwd()
 DATA_FILE = os.path.join(BASE_DIR, "data", "clean", "processed_sentences.txt")
@@ -142,6 +153,13 @@ is_dark_mode = st.get_option("theme.base") == "dark"
 bg_color = "#f9f9f9" if not is_dark_mode else "#262730"  # Light gray for light mode, dark gray for dark mode
 text_color = "#000000" if not is_dark_mode else "#ffffff"  # Black for light mode, white for dark mode
 
+# --- Progress Bar ---
+progress = st.session_state.annotated_count / st.session_state.total_sentences
+st.progress(progress)
+
+# --- Lottery Ticket Counter ---
+st.info(f"🎟️ Lodsedler: {st.session_state.lottery_tickets} (Optjen en ny lodseddel for hver 30. annoterede sætning)")
+
 # --- SENTENCE DISPLAY (Styled for Both Modes) ---
 st.markdown(
     f"""
@@ -160,35 +178,22 @@ st.button("Mere kontekst", key="context_btn")
 st.markdown("**Vil den brede offentlighed være interesseret i at vide, om (dele af) denne sætning er sand eller falsk?**")
 
 # --- FUNCTION TO HANDLE ANNOTATION ---
-#def annotate(label):
-#    # Get the current sentence
-#    sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
-
-#    # Store annotation in session state
-#    new_entry = [user_id, sentence, label, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-#    st.session_state.annotations.append(new_entry)
-
-#    # ✅ Move to next sentence or show completion message
-#    if st.session_state.sentence_index >= len(st.session_state.unannotated_sentences) - 1:
-#        st.session_state.finished = True
-#        threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
-#        st.session_state.annotations = []
-#        st.rerun()
-#    else:
-#        st.session_state.sentence_index += 1
-#        if len(st.session_state.annotations) >= 10:
-#            threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
-#            st.session_state.annotations = []
-#        st.rerun()
-
-# --- FUNCTION TO HANDLE ANNOTATION ---
 def annotate(label):
+   
     # Get the current sentence
     sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
 
     # Store annotation in session state
     new_entry = [user_id, sentence, label, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
     st.session_state.annotations.append(new_entry)
+
+    # Update progress for user
+    st.session_state.annotated_count += 1
+
+    # Aware lottery ticket for every 30 annotations
+    if st.session_state.annotated_count % 30 == 0:
+        st.session_state.lottery_tickets += 1
+        st.success(f"🎉 Du har optjent en ekstra lodseddel! Antal lodsedler: {st.session_state.lottery_tickets}")
 
     # ✅ Move to next sentence or show completion message
     if st.session_state.sentence_index >= len(st.session_state.unannotated_sentences) - 1:
