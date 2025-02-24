@@ -155,6 +155,27 @@ st.button("Mere kontekst", key="context_btn")
 st.markdown("**Vil den brede offentlighed være interesseret i at vide, om (dele af) denne sætning er sand eller falsk?**")
 
 # --- FUNCTION TO HANDLE ANNOTATION ---
+#def annotate(label):
+#    # Get the current sentence
+#    sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
+
+#    # Store annotation in session state
+#    new_entry = [user_id, sentence, label, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+#    st.session_state.annotations.append(new_entry)
+
+#    # ✅ Move to next sentence or show completion message
+#    if st.session_state.sentence_index >= len(st.session_state.unannotated_sentences) - 1:
+#        st.session_state.finished = True
+#        threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
+#        st.session_state.annotations = []
+#        st.rerun()
+#    else:
+#        st.session_state.sentence_index += 1
+#        if len(st.session_state.annotations) >= 10:
+#            threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
+#            st.session_state.annotations = []
+#        st.rerun()
+
 def annotate(label):
     # Get the current sentence
     sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
@@ -163,19 +184,30 @@ def annotate(label):
     new_entry = [user_id, sentence, label, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
     st.session_state.annotations.append(new_entry)
 
-    # ✅ Move to next sentence or show completion message
+    # ✅ Move to the next sentence or show completion message
     if st.session_state.sentence_index >= len(st.session_state.unannotated_sentences) - 1:
         st.session_state.finished = True
         threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
         st.session_state.annotations = []
-        st.rerun()
     else:
         st.session_state.sentence_index += 1
         if len(st.session_state.annotations) >= 10:
             threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
             st.session_state.annotations = []
-        st.rerun()
 
+    st.rerun()  # Only one rerun at the end
+
+def skip_sentence():
+    """ Move to the next sentence without annotation. """
+    if st.session_state.sentence_index < len(st.session_state.unannotated_sentences) - 1:
+        st.session_state.sentence_index += 1
+        st.rerun()
+    else:
+        st.session_state.finished = True
+        st.success("🎉 Du har annoteret alle sætninger!")
+        st.info("✅ Du kan nu logge ud via knappen i sidebaren.")
+        st.stop()
+        
 # --- ANNOTATION BUTTONS (Like in Screenshot) ---
 #col1, col2, col3 = st.columns(3)
 
@@ -202,17 +234,6 @@ if st.button("Der er en **vigtig** faktuel påstand.", key=f"btn_{st.session_sta
 
 # --- SEPARATOR LINE ---
 st.markdown("---")  # Adds a horizontal line separator
-
-def skip_sentence():
-    """ Move to the next sentence without annotation. """
-    if st.session_state.sentence_index < len(st.session_state.unannotated_sentences) - 1:
-        st.session_state.sentence_index += 1
-        st.rerun()
-    else:
-        st.session_state.finished = True
-        st.success("🎉 Du har annoteret alle sætninger!")
-        st.info("✅ Du kan nu logge ud via knappen i sidebaren.")
-        st.stop()
         
 # --- SKIP BUTTON (Styled with Smaller Font) ---
 skip_button_style = """
