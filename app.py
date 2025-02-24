@@ -7,11 +7,6 @@ import threading
 from google.oauth2.service_account import Credentials
 import json
 
-if "rerun_count" not in st.session_state:
-    st.session_state.rerun_count = 0
-st.session_state.rerun_count += 1
-st.write(f"🔄 Rerun count: {st.session_state.rerun_count}")
-
 # --- GOOGLE SHEETS SETUP ---
 GOOGLE_CREDENTIALS = st.secrets["GOOGLE_CREDENTIALS"]
 SHEET_ID = st.secrets["SHEET_ID"]
@@ -132,7 +127,7 @@ if len(st.session_state.unannotated_sentences) == 0 or st.session_state.get("fin
     st.stop()
 
 # ✅ Get the next sentence properly
-sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
+# sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
 
 # --- SENTENCE DISPLAY (Styled Like Screenshot) ---
 # --- Detect Dark Mode ---
@@ -181,6 +176,7 @@ st.markdown("**Vil den brede offentlighed være interesseret i at vide, om (dele
 #            st.session_state.annotations = []
 #        st.rerun()
 
+# --- FUNCTION TO HANDLE ANNOTATION ---
 def annotate(label):
     # Get the current sentence
     sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
@@ -189,24 +185,18 @@ def annotate(label):
     new_entry = [user_id, sentence, label, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
     st.session_state.annotations.append(new_entry)
 
-    # ✅ Move to the next sentence or show completion message
+    # ✅ Move to next sentence or show completion message
     if st.session_state.sentence_index >= len(st.session_state.unannotated_sentences) - 1:
         st.session_state.finished = True
-        threading.Thread(
-            target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
-        ).start()
+        threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
         st.session_state.annotations = []
+        st.rerun()
     else:
-        # ✅ Increment sentence index and trigger a forced rerun immediately
         st.session_state.sentence_index += 1
         if len(st.session_state.annotations) >= 10:
-            threading.Thread(
-                target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
-            ).start()
+            threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
             st.session_state.annotations = []
-
-    # ✅ Force a rerun immediately to reflect the updated sentence
-    st.rerun()
+        st.rerun()
 
 def skip_sentence():
     """ Move to the next sentence without annotation. """
