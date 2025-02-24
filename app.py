@@ -200,6 +200,9 @@ if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"bt
 if st.button("Der er en **vigtig** faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_3"):
     annotate("Important factual claim")
 
+# --- SEPARATOR LINE ---
+st.markdown("---")  # Adds a horizontal line separator
+
 def skip_sentence():
     """ Move to the next sentence without annotation. """
     if st.session_state.sentence_index < len(st.session_state.unannotated_sentences) - 1:
@@ -210,6 +213,23 @@ def skip_sentence():
         st.success("🎉 Du har annoteret alle sætninger!")
         st.info("✅ Du kan nu logge ud via knappen i sidebaren.")
         st.stop()
+        
+# --- SKIP BUTTON (Styled with Smaller Font) ---
+skip_button_style = """
+    <style>
+    .small-font-button > button {
+        font-size: 12px !important;
+        padding: 4px 10px !important;
+    }
+    </style>
+"""
+st.markdown(skip_button_style, unsafe_allow_html=True)
+
+# Place the button with custom styling
+with st.container():
+    if st.button("Spring denne sætning over", key=f"skip_{st.session_state.sentence_index}"):
+        skip_sentence()
+        
 
 # def go_back():
 #     """ Move back one sentence to allow editing. """
@@ -218,11 +238,11 @@ def skip_sentence():
 #         st.rerun()
 
 # --- BOTTOM ACTION BUTTONS ---
-col1, col2 = st.columns([1, 2])
+#col1, col2 = st.columns([1, 2])
 
-with col1:
-    if st.button("Spring denne sætning over", key=f"skip_{st.session_state.sentence_index}"):
-        skip_sentence()
+#with col1:
+#    if st.button("Spring denne sætning over", key=f"skip_{st.session_state.sentence_index}"):
+#        skip_sentence()
 
 # with col2:
 #     if st.button("Rediger tidligere svar", key="modify_btn"):
