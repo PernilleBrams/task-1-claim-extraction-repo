@@ -127,7 +127,7 @@ if len(st.session_state.unannotated_sentences) == 0 or st.session_state.get("fin
     st.stop()
 
 # ✅ Get the next sentence properly
-# sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
+sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
 
 # --- SENTENCE DISPLAY (Styled Like Screenshot) ---
 # --- Detect Dark Mode ---
