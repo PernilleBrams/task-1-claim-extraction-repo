@@ -218,21 +218,8 @@ def skip_sentence():
         st.info("✅ Du kan nu logge ud via knappen i sidebaren.")
         st.stop()
         
-# --- ANNOTATION BUTTONS (Like in Screenshot) ---
-#col1, col2, col3 = st.columns(3)
-
-#with col1:
-#    if st.button("Der er **ikke** nogen faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_1"):
-#        annotate("No factual claim")
-
-#with col2:
-#    if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"btn_{st.session_state.sentence_index}_2"):
-#        annotate("Factual but unimportant")
-
-#with col3:
-#    if st.button("Der er en **vigtig** faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_3"):
-#        annotate("Important factual claim")
-if st.button("Der er **ikke** nogen faktuel påstand.", key=f"label_btn_{st.session_state.sentence_index}_1"):
+# --- ANNOTATION BUTTONS ---
+if st.button("Der er **ikke** en faktuel påstand.", key=f"label_btn_{st.session_state.sentence_index}_1"):
     annotate("No factual claim")
 
 if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"label_btn_{st.session_state.sentence_index}_2"):
@@ -240,6 +227,16 @@ if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"la
 
 if st.button("Der er en **vigtig** faktuel påstand.", key=f"label_btn_{st.session_state.sentence_index}_3"):
     annotate("Important factual claim")
+
+if st.button("Det er en **normativ** udtalelse (værdi-udtalelse, ønske eller anbefaling)", key=f"label_btn_{st.session_state.sentence_index}_3"):
+    annotate("Normative statement")
+
+## Labels
+# No factual claim – No verifiable information.
+# Factual but unimportant claim – Verifiable but not impactful.
+# Important factual claim – Verifiable and relevant.
+# Normative statement – Expresses value judgments, recommendations, or policies.
+# Maybe also: Mixed claim – Contains both factual and normative elements (optional but useful for edge cases).
 
 # --- SEPARATOR LINE ---
 st.markdown("---")  # Adds a horizontal line separator
