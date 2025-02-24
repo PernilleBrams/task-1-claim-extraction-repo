@@ -197,13 +197,16 @@ def annotate(label):
         ).start()
         st.session_state.annotations = []
     else:
-        # ✅ Increment sentence index without forcing a manual rerun
+        # ✅ Increment sentence index and trigger a forced rerun immediately
         st.session_state.sentence_index += 1
         if len(st.session_state.annotations) >= 10:
             threading.Thread(
                 target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
             ).start()
             st.session_state.annotations = []
+
+    # ✅ Force a rerun immediately to reflect the updated sentence
+    st.rerun()
 
 
 def skip_sentence():
