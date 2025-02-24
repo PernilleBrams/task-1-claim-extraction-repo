@@ -177,19 +177,28 @@ def annotate(label):
         st.rerun()
 
 # --- ANNOTATION BUTTONS (Like in Screenshot) ---
-col1, col2, col3 = st.columns(3)
+#col1, col2, col3 = st.columns(3)
 
-with col1:
-    if st.button("Der er **ikke** nogen faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_1"):
-        annotate("No factual claim")
+#with col1:
+#    if st.button("Der er **ikke** nogen faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_1"):
+#        annotate("No factual claim")
 
-with col2:
-    if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"btn_{st.session_state.sentence_index}_2"):
-        annotate("Factual but unimportant")
+#with col2:
+#    if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"btn_{st.session_state.sentence_index}_2"):
+#        annotate("Factual but unimportant")
 
-with col3:
-    if st.button("Der er en **vigtig** faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_3"):
-        annotate("Important factual claim")
+#with col3:
+#    if st.button("Der er en **vigtig** faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_3"):
+#        annotate("Important factual claim")
+
+if st.button("Der er **ikke** nogen faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_1"):
+    annotate("No factual claim")
+
+if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"btn_{st.session_state.sentence_index}_2"):
+    annotate("Factual but unimportant")
+
+if st.button("Der er en **vigtig** faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_3"):
+    annotate("Important factual claim")
 
 def skip_sentence():
     """ Move to the next sentence without annotation. """
