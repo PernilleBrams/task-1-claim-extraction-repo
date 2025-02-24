@@ -111,7 +111,7 @@ st.session_state.unannotated_sentences = unannotated_sentences
 # ✅ Ensure `sentence_index` is initialized correctly
 if "sentence_index" not in st.session_state or st.session_state.sentence_index == -1:
     st.session_state.sentence_index = 0
-    st.rerun()
+    #st.rerun()
 
 # ✅ If all sentences are annotated, trigger completion message immediately
 if len(st.session_state.unannotated_sentences) == 0 or st.session_state.get("finished", False):
