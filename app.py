@@ -228,7 +228,7 @@ if st.button("Der er en faktuel påstand, men den er **ikke vigtig**.", key=f"la
 if st.button("Der er en **vigtig** faktuel påstand.", key=f"label_btn_{st.session_state.sentence_index}_3"):
     annotate("Important factual claim")
 
-if st.button("Det er en **normativ** udtalelse (værdi-udtalelse, ønske eller anbefaling)", key=f"label_btn_{st.session_state.sentence_index}_3"):
+if st.button("Det er en **normativ** udtalelse (værdi-udtalelse, ønske eller anbefaling)", key=f"label_btn_{st.session_state.sentence_index}_4"):
     annotate("Normative statement")
 
 ## Labels
