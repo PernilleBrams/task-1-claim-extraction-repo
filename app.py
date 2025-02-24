@@ -12,7 +12,6 @@ if "rerun_count" not in st.session_state:
 st.session_state.rerun_count += 1
 st.write(f"🔄 Rerun count: {st.session_state.rerun_count}")
 
-
 # --- GOOGLE SHEETS SETUP ---
 GOOGLE_CREDENTIALS = st.secrets["GOOGLE_CREDENTIALS"]
 SHEET_ID = st.secrets["SHEET_ID"]
@@ -182,34 +181,6 @@ st.markdown("**Vil den brede offentlighed være interesseret i at vide, om (dele
 #            st.session_state.annotations = []
 #        st.rerun()
 
-# works but double refresh
-#def annotate(label):
-#    # Get the current sentence
-#    sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
-
-#    # Store annotation in session state
-#    new_entry = [user_id, sentence, label, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-#    st.session_state.annotations.append(new_entry)
-
-#    # ✅ Move to the next sentence or show completion message
-#    if st.session_state.sentence_index >= len(st.session_state.unannotated_sentences) - 1:
-#        st.session_state.finished = True
-#        threading.Thread(
-#            target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
-#        ).start()
-#        st.session_state.annotations = []
-#    else:
-#        # ✅ Increment sentence index and trigger a forced rerun immediately
-#        st.session_state.sentence_index += 1
-#        if len(st.session_state.annotations) >= 10:
-#            threading.Thread(
-#                target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
-#            ).start()
-#            st.session_state.annotations = []
-
-#    # ✅ Force a rerun immediately to reflect the updated sentence
-#    st.rerun()
-
 def annotate(label):
     # Get the current sentence
     sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
@@ -225,18 +196,17 @@ def annotate(label):
             target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
         ).start()
         st.session_state.annotations = []
-        st.experimental_rerun()  # Explicit rerun when done
     else:
-        # ✅ Increment sentence index
+        # ✅ Increment sentence index and trigger a forced rerun immediately
         st.session_state.sentence_index += 1
-
-        # ✅ Save after every 10 annotations and force rerun only on save
         if len(st.session_state.annotations) >= 10:
             threading.Thread(
                 target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
             ).start()
             st.session_state.annotations = []
-            st.experimental_rerun()  # Force rerun only after saving
+
+    # ✅ Force a rerun immediately to reflect the updated sentence
+    st.rerun()
 
 def skip_sentence():
     """ Move to the next sentence without annotation. """
