@@ -228,7 +228,7 @@ def skip_sentence():
 # Force rerun if flag is set
 if st.session_state.force_rerun:
     st.session_state.force_rerun = False  # Reset flag
-    st.experimental_rerun()
+    st.rerun()
 
 if st.button("Der er **ikke** nogen faktuel påstand.", key=f"btn_{st.session_state.sentence_index}_1"):
     annotate("No factual claim")
