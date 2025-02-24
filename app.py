@@ -151,7 +151,7 @@ st.markdown(
 # ✅ Trigger manual rerun only if the flag is set
 if "force_refresh" in st.session_state and st.session_state.force_refresh:
     st.session_state.force_refresh = False  # Reset the flag
-    st.experimental_rerun()  # This forces a rerun without triggering a double rerun
+    st.rerun()  # This forces a rerun without triggering a double rerun
 
 
 # --- More Context Button ---
