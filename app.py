@@ -7,6 +7,12 @@ import threading
 from google.oauth2.service_account import Credentials
 import json
 
+if "rerun_count" not in st.session_state:
+    st.session_state.rerun_count = 0
+st.session_state.rerun_count += 1
+st.write(f"Rerun count: {st.session_state.rerun_count}")
+
+
 # --- GOOGLE SHEETS SETUP ---
 GOOGLE_CREDENTIALS = st.secrets["GOOGLE_CREDENTIALS"]
 SHEET_ID = st.secrets["SHEET_ID"]
@@ -148,12 +154,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ✅ Trigger manual rerun only if the flag is set
-if "force_refresh" in st.session_state and st.session_state.force_refresh:
-    st.session_state.force_refresh = False  # Reset the flag
-    st.rerun()  # This forces a rerun without triggering a double rerun
-
-
 # --- More Context Button ---
 st.button("Mere kontekst", key="context_btn")
 
@@ -181,7 +181,6 @@ st.markdown("**Vil den brede offentlighed være interesseret i at vide, om (dele
 #            threading.Thread(target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True).start()
 #            st.session_state.annotations = []
 #        st.rerun()
-
 def annotate(label):
     # Get the current sentence
     sentence = st.session_state.unannotated_sentences[st.session_state.sentence_index]
@@ -198,15 +197,14 @@ def annotate(label):
         ).start()
         st.session_state.annotations = []
     else:
-        st.session_state.sentence_index += 1  # Increment without rerun
+        # ✅ Increment sentence index without forcing a manual rerun
+        st.session_state.sentence_index += 1
         if len(st.session_state.annotations) >= 10:
             threading.Thread(
                 target=save_annotations, args=(user_id, st.session_state.annotations), daemon=True
             ).start()
             st.session_state.annotations = []
 
-    # ✅ Set a flag to trigger a refresh
-    st.session_state.force_refresh = True
 
 def skip_sentence():
     """ Move to the next sentence without annotation. """
