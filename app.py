@@ -51,13 +51,18 @@ def save_annotations(user_id, annotations):
 st.sidebar.title("Brugerlogin")
 
 # ✅ Load allowed users dynamically from Google Sheets
-ALLOWED_USERS = fetch_allowed_users()
+# ALLOWED_USERS = fetch_allowed_users()
+
+# ✅ Load allowed users only once per session
+if "ALLOWED_USERS" not in st.session_state:
+    st.session_state.ALLOWED_USERS = fetch_allowed_users()
 
 # ✅ Check if user is logged in
 if "user_id" not in st.session_state:
     user_id = st.sidebar.text_input("Indtast dit bruger-ID:")
     if st.sidebar.button("Log in") and user_id.strip():
-        if user_id.strip() in ALLOWED_USERS:
+        #if user_id.strip() in ALLOWED_USERS:
+        if user_id.strip() in st.session_state.ALLOWED_USERS:
             st.session_state.user_id = user_id.strip()
             st.session_state.sentence_index = -1
             st.session_state.annotations = []
